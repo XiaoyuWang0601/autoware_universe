@@ -14273,9 +14273,9 @@
 <td>N/A</td>
 </tr>
 <tr>
-<td>th_dist_hysteresis_m</td>
+<td>th_point_merge_distance_m</td>
 <td>float</td>
-<td>Minimum distance between critical points to avoid duplicates [m].</td>
+<td>Distance threshold to merge nearby points [m].</td>
 <td>1.0</td>
 <td>N/A</td>
 </tr>
@@ -14298,6 +14298,55 @@
 <td>float</td>
 <td>Minimum goal shift distance to trigger module reset [m].</td>
 <td>1.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.predicted_path</td>
+<td>float</td>
+<td>Cutoff time to consider from predicted path [s].</td>
+<td>3.5</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.near_boundary</td>
+<td>float</td>
+<td>Cutoff time to consider departure point as near boundary type [s].</td>
+<td>3.5</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>th_cutoff_time_s.departure</td>
+<td>float</td>
+<td>Cutoff time to consider departure point as critical departure type, anything more than is considered approaching departure [s].</td>
+<td>2.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>on_time_buffer_s.near_boundary</td>
+<td>float</td>
+<td>Continuous detection time threshold to insert departure point into departure interval. [s]</td>
+<td>0.15</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>on_time_buffer_s.critical_departure</td>
+<td>float</td>
+<td>Continuous detection time required to accept new critical departure point. [s]</td>
+<td>0.15</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>off_time_buffer_s.near_boundary</td>
+<td>float</td>
+<td>Continuous detection time threshold to reset departure interval. [s]</td>
+<td>0.15</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>off_time_buffer_s.critical_departure</td>
+<td>float</td>
+<td>Continuous detection time threshold to reset critical departure. [s]</td>
+<td>0.15</td>
 <td>N/A</td>
 </tr>
 <tr>
@@ -14364,16 +14413,170 @@
 <td>N/A</td>
 </tr>
 <tr>
-<td>steering.enable</td>
+<td>steering_accelerated.enable</td>
 <td>boolean</td>
-<td>Enable steering-aware footprint margin.</td>
+<td>Enable footprint obtained from re-simulating the steering of the predicted trajectory</td>
 <td>false</td>
 <td>N/A</td>
 </tr>
 <tr>
-<td>steering.steering_rate_rps</td>
+<td>steering_accelerated.steering_rate_velocities_mps</td>
+<td>array</td>
+<td>velocities [m/s] used as keys for the steering rate limits mapping.</td>
+<td>[0.0, 3.5, 9.1, 14.7, 20.3, 25.9, 31.5]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_accelerated.steering_rate_limits_rps</td>
+<td>array</td>
+<td>steering rate limits [rad/s] mapped from the velocities</td>
+<td>[3.14, 0.777, 0.115, 0.044, 0.023, 0.014, 0.01]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_accelerated.delay_s</td>
 <td>float</td>
-<td>Steering rate [rad/s] used to compute curvature-induced lateral margin.</td>
+<td>[s] delay to apply to the re-simulated steering</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_accelerated.offset_rps</td>
+<td>float</td>
+<td>[rad/s] extra steering rate to add to the original steering profile</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_accelerated.factor</td>
+<td>float</td>
+<td>[-] factor to apply to the original steering profile</td>
+<td>1.2</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.enable</td>
+<td>boolean</td>
+<td>Enable footprint obtained from re-simulating the steering of the predicted trajectory</td>
+<td>false</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.steering_rate_velocities_mps</td>
+<td>array</td>
+<td>velocities [m/s] used as keys for the steering rate limits mapping.</td>
+<td>[0.0, 3.5, 9.1, 14.7, 20.3, 25.9, 31.5]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.steering_rate_limits_rps</td>
+<td>array</td>
+<td>steering rate limits [rad/s] mapped from the velocities</td>
+<td>[3.14, 0.777, 0.115, 0.044, 0.023, 0.014, 0.01]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.delay_s</td>
+<td>float</td>
+<td>[s] delay to apply to the re-simulated steering</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.offset_rps</td>
+<td>float</td>
+<td>[rad/s] extra steering rate to add to the original steering profile</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_stuck.factor</td>
+<td>float</td>
+<td>[-] factor to apply to the original steering profile</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.enable</td>
+<td>boolean</td>
+<td>Enable footprint obtained from re-simulating the steering of the predicted trajectory</td>
+<td>false</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.steering_rate_velocities_mps</td>
+<td>array</td>
+<td>velocities [m/s] used as keys for the steering rate limits mapping.</td>
+<td>[0.0, 3.5, 9.1, 14.7, 20.3, 25.9, 31.5]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.steering_rate_limits_rps</td>
+<td>array</td>
+<td>steering rate limits [rad/s] mapped from the velocities</td>
+<td>[3.14, 0.777, 0.115, 0.044, 0.023, 0.014, 0.01]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.delay_s</td>
+<td>float</td>
+<td>[s] delay to apply to the re-simulated steering</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.offset_rps</td>
+<td>float</td>
+<td>[rad/s] extra steering rate to add to the original steering profile</td>
+<td>0.2</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_left.factor</td>
+<td>float</td>
+<td>[-] factor to apply to the original steering profile</td>
+<td>1.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.enable</td>
+<td>boolean</td>
+<td>Enable footprint obtained from re-simulating the steering of the predicted trajectory</td>
+<td>false</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.steering_rate_velocities_mps</td>
+<td>array</td>
+<td>velocities [m/s] used as keys for the steering rate limits mapping.</td>
+<td>[0.0, 3.5, 9.1, 14.7, 20.3, 25.9, 31.5]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.steering_rate_limits_rps</td>
+<td>array</td>
+<td>steering rate limits [rad/s] mapped from the velocities</td>
+<td>[3.14, 0.777, 0.115, 0.044, 0.023, 0.014, 0.01]</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.delay_s</td>
+<td>float</td>
+<td>[s] delay to apply to the re-simulated steering</td>
+<td>0.0</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.offset_rps</td>
+<td>float</td>
+<td>[rad/s] extra steering rate to add to the original steering profile</td>
+<td>-0.2</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td>steering_sudden_right.factor</td>
+<td>float</td>
+<td>[-] factor to apply to the original steering profile</td>
 <td>1.0</td>
 <td>N/A</td>
 </tr>
